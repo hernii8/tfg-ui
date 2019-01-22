@@ -1,0 +1,26 @@
+canvas {
+  display: inline-block;
+}
+
+.desestimatorio {
+  border-left: 3px solid #00447b;
+}
+
+.estimatorio {
+  border-left: 3px solid #17a2b8;
+}
+
+.parcial {
+  border-left: 3px solid #44cfad;
+}
+
+.m-t-5 {
+  margin-top: 5%;
+}
+
+.block-content{
+    background-color: rgba(229,234,237,.25);
+    border-radius: 2%;
+    padding: 4%;
+    margin-top: 1%;
+}

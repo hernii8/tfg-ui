@@ -1,20 +1,103 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+<div class="page-wrapper">
+  <div class="container m-t-40">
+    <div class="card">
+      <div class="row">
+        <div class="col-12">
+          <h5 class="card-title">Campos identificados</h5>
+          <div class="form-group">
+            <p class="form-control-label">Materia</p>
+            <ng-select [options]="materias" [(ngModel)]="seleccionados.materiaId" placeholder="Busca por materia"
+              notFoundMsg="No hay resultados" class="e4-select" name="materias" required>
+            </ng-select>
+          </div>
+          <div class="form-group">
+            <p class="form-control-label">Juez</p>
+            <ng-select class="e4-select" [(ngModel)]="seleccionados.juezId" [options]="jueces" placeholder="Busca por el nombre del magistrado/a"
+              notFoundMsg="No hay resultados" (filterInputChanged)="getJueces($event)" name="juez">
+            </ng-select>
+          </div>
+          <div class="form-group">
+            <p class="form-control-label">Perfil del cliente</p>
+            <ng-select [options]="perfiles" [(ngModel)]="seleccionados.perfil" [noFilter]="10" placeholder="Elige el perfil"
+              notFoundMsg="No hay resultados" class="e4-select" name="oerfil" required>
+            </ng-select>
+          </div>
+          <div class="form-group">
+            <p class="form-control-label">Posición procesal</p>
+            <ng-select [options]="posiciones" [(ngModel)]="seleccionados.posicion" [noFilter]="10" placeholder="Elige la posición procesal"
+              notFoundMsg="No hay resultados" class="e4-select" name="posicion" required>
+            </ng-select>
+          </div>
+          <div class="form-group">
+            <p class="form-control-label">Abogado</p>
+            <ng-select class="e4-select" [(ngModel)]="seleccionados.abogadoId" [options]="abogados" placeholder="Busca por el nombre del abogado/a"
+              notFoundMsg="No hay resultados" (filterInputChanged)="getAbogados($event)" name="abogado">
+            </ng-select>
+          </div>
+          <button [disabled]="validateForm()" class="btn btn-primary" (click)="sendForm()">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
 
+<div class="modal" tabindex="-1" id="myModal" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Resultados</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h5 class="text-center" style="font-weight: normal" *ngIf="prediccionRecibida">El resultado de la predicción es <b *ngIf="prediccion">{{prediccion.prediccion}}</b></h5>
+        <hr>
+        <div class="row">
+          <div class="col-12">
+            <div class="row block-content">
+              <div class="col-12">
+                  <p><b>Datos del abogado</b> <span class="small text-muted"> en casos similares</span></p><br>
+              </div>
+              <div class="col-12 col-md-6">
+                <p class="text-center small">Número de resoluciones</p>
+                <canvas #abogadoChartResoluciones>{{ barChart1 }}</canvas>
+              </div>
+              <div class="col-12 col-md-6">
+                <p class="text-center small">Tasa de éxito (%)</p>
+                <canvas #abogadoChartExito>{{ barChart2 }}</canvas>
+              </div>
+            </div>
+            <div class="row block-content">
+              <div class="col-12">
+                <p><b>Fallos del juez</b> <span class="small text-muted"> en casos similares</span></p><br>
+              </div>
+              <div class="col-6">
+                <canvas #juezChart>{{ pieChart }}</canvas>
+              </div>
+              <div class="col-6">
+                <div class="row" *ngIf="prediccionRecibida">
+                  <div class="col-6 desestimatorio">No estimatorio<br><span class="text-muted small">{{(prediccion.juezDesestimatorios
+                      / totalesJuez) * 100 | number : '1.2-2'}}%</span></div>
+                  <div class="col-6 parcial">Estimatorio parcial<br><span class="text-muted small">{{(prediccion.juezParciales
+                      / totalesJuez) * 100 | number : '1.2-2'}}%</span></div>
+                  <div style="margin-top: 3%" class="col-6 estimatorio">Estimatorio<br><span class="text-muted small">{{(prediccion.juezEstimatorios
+                      / totalesJuez) * 100 | number : '1.2-2'}}%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 m-t-5" *ngIf="prediccionRecibida">
+            El juez y el abogado han coincidido en <b>{{prediccion.relacionTotal}} resoluciones</b>, teniendo el abogado un
+            <b>{{prediccion.relacionExito*100}}% de éxito</b> en el total de las mismas. 
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a *ngIf="prediccion.abogadoURL" target="_blank" href="{{prediccion.abogadoURL}}" class="btn btn-primary">Ir al
+          perfil del abogado</a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
