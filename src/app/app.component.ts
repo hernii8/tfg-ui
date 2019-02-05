@@ -152,29 +152,40 @@ export class AppComponent {
         }
       });
       this.totalesJuez = this.prediccion.juezDesestimatorios + this.prediccion.juezEstimatorios + this.prediccion.juezParciales;
-      this.pieChart = new Chart(this.juezChart.nativeElement, {
-        type: 'doughnut',
-        data: {
-          labels: ['Desestimatorios (%)', 'Estimatorios parciales (%)', 'Estimatorios (%)'],
-          datasets: [{
-            label: 'Fallo',
-            data: [this.totalesJuez ? Math.round((this.prediccion.juezDesestimatorios / this.totalesJuez) * 100) : 0,
-            this.totalesJuez ? Math.round((this.prediccion.juezEstimatorios / this.totalesJuez) * 100) : 0,
-            this.totalesJuez ? Math.round((this.prediccion.juezParciales / this.totalesJuez) * 100) : 0],
-            backgroundColor: [
-              '#00447b',
-              '#17a2b8',
-              '#44cfad'
-            ]
-          }],
-        },
-        options: {
-          cutoutPercentage: 70,
-          legend: {
-            display: false
-          }
-        },
-      });
+      if (this.juezChart) {
+        let data = [];
+        let background = [];
+        if (this.totalesJuez) {
+          data = [this.totalesJuez ? Math.round((this.prediccion.juezDesestimatorios / this.totalesJuez) * 100) : 0,
+          this.totalesJuez ? Math.round((this.prediccion.juezEstimatorios / this.totalesJuez) * 100) : 0,
+          this.totalesJuez ? Math.round((this.prediccion.juezParciales / this.totalesJuez) * 100) : 0];
+          background = [
+            '#00447b',
+            '#17a2b8',
+            '#44cfad'
+          ];
+        } else { data = [1]; background = ['#ccc']; }
+        this.pieChart = new Chart(this.juezChart.nativeElement, {
+          type: 'doughnut',
+          data: {
+            labels: ['Desestimatorios (%)', 'Estimatorios parciales (%)', 'Estimatorios (%)'],
+            datasets: [{
+              label: 'Fallo',
+              data: data,
+              backgroundColor: background
+            }],
+          },
+          options: {
+            tooltips: {
+              enabled: false
+            },
+            cutoutPercentage: 70,
+            legend: {
+              display: false
+            }
+          },
+        });
+      }
     },
       (err) => {
         console.error(err);

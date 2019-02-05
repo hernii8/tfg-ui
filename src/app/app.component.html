@@ -3,7 +3,9 @@
     <div class="card">
       <div class="row">
         <div class="col-12">
-          <h5 class="card-title">Campos identificados</h5>
+          <h5 class="card-title">Campos identificados 
+              <button type="button" class="btn btn-secondary float-right" data-toggle="modal" data-target="#myModal2">
+                ? </button></h5>
           <div class="form-group">
             <p class="form-control-label">Materia</p>
             <ng-select [options]="materias" [(ngModel)]="seleccionados.materiaId" placeholder="Busca por materia"
@@ -51,13 +53,14 @@
         </button>
       </div>
       <div class="modal-body">
-        <h5 class="text-center" style="font-weight: normal" *ngIf="prediccionRecibida">El resultado de la predicción es <b *ngIf="prediccion">{{prediccion.prediccion}}</b></h5>
+        <h5 class="text-center" style="font-weight: normal" *ngIf="prediccionRecibida">El resultado de la predicción es
+          <b *ngIf="prediccion">{{prediccion.prediccion}}</b></h5>
         <hr>
         <div class="row">
           <div class="col-12">
             <div class="row block-content">
               <div class="col-12">
-                  <p><b>Datos del abogado</b> <span class="small text-muted"> en casos similares</span></p><br>
+                <p><b>Datos del abogado</b> <span class="small text-muted"> en casos similares</span></p><br>
               </div>
               <div class="col-12 col-md-6">
                 <p class="text-center small">Número de resoluciones</p>
@@ -74,22 +77,25 @@
               </div>
               <div class="col-6">
                 <canvas #juezChart>{{ pieChart }}</canvas>
+                <p class="text-center texto-grafica" *ngIf="totalesJuez"> {{prediccion.juezResoluciones}}</p>
+                <p class="text-center texto-grafica" *ngIf="!totalesJuez"> 0</p>
               </div>
-              <div class="col-6">
-                <div class="row" *ngIf="prediccionRecibida">
-                  <div class="col-6 desestimatorio">No estimatorio<br><span class="text-muted small">{{(prediccion.juezDesestimatorios
-                      / totalesJuez) * 100 | number : '1.2-2'}}%</span></div>
+              <div class="col-6 m-t-5">
+                <div class="row" *ngIf="prediccionRecibida && totalesJuez">
+                  <div class="col-6 desestimatorio">Desestimatorio<br><span class="text-muted small">{{(prediccion.juezDesestimatorios
+                      / totalesJuez) * 100 | number : '1.0-2'}}%</span></div>
                   <div class="col-6 parcial">Estimatorio parcial<br><span class="text-muted small">{{(prediccion.juezParciales
-                      / totalesJuez) * 100 | number : '1.2-2'}}%</span></div>
+                      / totalesJuez) * 100 | number : '1.0-2'}}%</span></div>
                   <div style="margin-top: 3%" class="col-6 estimatorio">Estimatorio<br><span class="text-muted small">{{(prediccion.juezEstimatorios
-                      / totalesJuez) * 100 | number : '1.2-2'}}%</span></div>
+                      / totalesJuez) * 100 | number : '1.0-2'}}%</span></div>
                 </div>
               </div>
             </div>
           </div>
           <div class="col-12 m-t-5" *ngIf="prediccionRecibida">
-            El juez y el abogado han coincidido en <b>{{prediccion.relacionTotal}} resoluciones</b>, teniendo el abogado un
-            <b>{{prediccion.relacionExito*100}}% de éxito</b> en el total de las mismas. 
+            El juez y el abogado han coincidido en <b>{{prediccion.relacionTotal}} resoluciones</b>, teniendo el
+            abogado un
+            <b>{{prediccion.relacionExito*100}}% de éxito</b> en el total de las mismas.
           </div>
         </div>
       </div>
@@ -97,6 +103,50 @@
         <a *ngIf="prediccion.abogadoURL" target="_blank" href="{{prediccion.abogadoURL}}" class="btn btn-primary">Ir al
           perfil del abogado</a>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" id="myModal2" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Información y ayuda</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Este sistema analiza las entradas proporcionadas por el usuario mediante algoritmos SVM para conseguir
+          predecir el resultado de un posible juicio
+          en las condiciones dadas. <br>
+          Para obtener la predicción correctamente, es necesario completar todos los campos requeridos.<p>
+            <hr>
+            <p>
+              • <b>Materia</b>: La materia es el ámbito del derecho en el cual se desenvuelve el proceso judicial. En
+              este campo
+              se mostrarán todas las materias para las cuales se permite hacer una predicción y se podrán filtrar
+              mediante
+              la búsqueda por su nombre.<br>
+              • <b>Juez</b>: El juez o magistrado es la persona encargada de decidir el resultado del juicio basándose
+              en las
+              evidencias presentadas en el mismo. En este campo se podrá buscar por el nombre del juez y saldrán todas
+              las
+              coincidencias encontradas.<br>
+              • <b>Perfil del cliente</b>: El perfil del cliente es un atributo inherente al mismo que le define. En
+              este caso,
+              puede ser persona física o persona jurídica.<br>
+              • <b>Posición procesal</b>: La posición procesal identifica el rol de cada parte en el juicio. Puede ser
+              demandante
+              o demandado.<br>
+              • <b>Abogado</b>: El abogado es el profesional encargado de ejercer la defensa jurídica de su cliente.
+              Igual que los
+              jueces, se podrá buscar por el nombre de los mismos.
+            </p>
+      </div>
+      <div class="modal-footer">
       </div>
     </div>
   </div>

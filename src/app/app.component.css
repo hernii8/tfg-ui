@@ -24,3 +24,12 @@ canvas {
     padding: 4%;
     margin-top: 1%;
 }
+
+.texto-grafica{    
+    position: absolute;
+    top: 40%;
+    left: 45%;
+    width: 10%;
+    font-weight: bold;
+    font-size: 1.3em;
+}
